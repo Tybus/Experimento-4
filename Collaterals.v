@@ -70,3 +70,22 @@ always @(posedge Clock)
 	oDataOut <= Ram[iReadAddress];
 	end
 endmodule
+
+module ClockDiv2 
+(	
+	input Reset,
+	input Clock,
+	output Clock2
+);
+reg [1:0] cuente;
+
+always@(posedge Clock)
+	begin
+	if(Reset)
+		cuente <=0;
+	else
+		cuente = cuente +1;
+	end
+assign Clock2 = cuente[1];	
+	
+endmodule
