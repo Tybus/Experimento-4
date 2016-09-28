@@ -82,7 +82,7 @@ reg [1:0] cuente;
 always@(posedge Clock)
 	begin
 	if(Reset)
-		cuente <=0;
+		cuente =0;
 	else
 		cuente = cuente +1;
 	end

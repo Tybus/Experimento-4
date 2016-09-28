@@ -47,6 +47,9 @@ output reg [18:0] oColorAddress
 			ResetCol <=1;
 			ResetFila<=1;
 			oColorAddress<=0;
+			oVs <=1;
+			oHs <=1;
+			enableFila <=0;
 		end
 		
 		else
