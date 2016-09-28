@@ -11,7 +11,7 @@ module ROM
 always @ ( iAddress )
 begin
 	case (iAddress)
-
+/*
 	0: oInstruction = { `NOP ,24'd4000    };
 	1: oInstruction = { `STO , `R7,16'b0001 };
 	2: oInstruction = { `STO ,`R3,16'h1     }; 
@@ -30,6 +30,13 @@ begin
 	12: oInstruction = { `NOP ,24'd4000       }; 
 	13: oInstruction = { `ADD ,`R7,`R7,`R3    };
 	14: oInstruction = { `JMP ,  8'd2,16'b0   };
+*/
+	0: oInstruction = { `NOP ,24'd4000    };
+	1: oInstruction = { `STO , `R1,16'd0 };
+	2: oInstruction = { `STO ,`R2,16'd7    };
+	3: oInstruction = { `NOP ,24'd4000    };
+	4: oInstruction = { `VGA , `COLOR_BLUE, `R1, `R2};
+	
 	default:
 		oInstruction = { `LED ,  24'b10101010 };		//NOP
 	endcase	
