@@ -16,8 +16,7 @@ module TestBench;
 		.Clock(Clock), 
 		.oHs(oHs), 
 		.oVs(oVs),
-		.Reset(Reset),
-		
+		.Reset2(Reset),
 		//.iColor(iColor),
 		.oRGB(oRGB),
 		.oColorAddress(oColorAddress)
@@ -31,7 +30,12 @@ module TestBench;
 
 	initial begin
 		// Initialize Inputs
-		Clock = 0;
+		Clock =0;
+		
+		Reset = 0;
+	
+		#100
+
 		Reset = 1;
 		#100
 		Reset =0;

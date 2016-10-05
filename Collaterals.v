@@ -89,3 +89,40 @@ always@(posedge Clock)
 assign Clock2 = cuente[1];	
 	
 endmodule
+
+module Reseter
+(
+	input Reset,
+	input Clock,
+	output reg newReset
+);
+reg [1:0] cuente;
+reg [3:0] cuente2;
+
+always@(Clock)
+	begin
+	
+		if(Reset)
+		begin
+			cuente <=0;
+			newReset <=0;
+			cuente2 <=0;
+		end
+		
+		else if(cuente2 == 15)
+			newReset<=0;
+		
+		else if(cuente == 3)
+		begin
+			newReset <= 1;
+			cuente2<= cuente2+1;
+		end
+		
+		else
+		begin
+			cuente <= cuente +1;
+			newReset<=0;
+			cuente2 <=0;
+		end	
+	end
+endmodule

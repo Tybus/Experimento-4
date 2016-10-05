@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 module VGA 
 (
-input wire Clock, Reset,
+input wire Clock, Reset2,
 //input wire [2:0] iColor,
 output reg oHs,oVs,
 output wire [2:0] oRGB,
@@ -18,7 +18,7 @@ output reg [18:0] oColorAddress
 	ClockDiv2 clocker
 	(
 		.Clock(Clock),
-		.Reset(Reset),
+		.Reset(Reset2),
 		.Clock2(Clock2)
 	);
 	
@@ -39,13 +39,19 @@ output reg [18:0] oColorAddress
 		.Enable(enableFila),
 		.Q(numFila)
 	);
-		
+	
+	Reseter reseteador
+	(
+		.Clock(Clock),
+		.Reset(Reset2),
+		.newReset(Reset)
+	);
 	always @(*) //Dinamica de contadores
 	begin
 		if(Reset) //Inciio
 		begin
 			ResetCol <=1;
-			ResetFila<=1;
+			ResetFila <=1;
 			oColorAddress<=0;
 			oVs <=1;
 			oHs <=1;
@@ -55,7 +61,7 @@ output reg [18:0] oColorAddress
 		else
 		begin
 		
-		if(numColumna > 16'd639 & numColumna <=16'd8639 &numFila == 9'd479) 
+		if(numColumna > 16'd639 & numColumna <=16'd8639 & numFila == 9'd479) 
 		begin // TFP VS
 			enableFila <=0;
 			ResetCol <= 0;
