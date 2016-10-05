@@ -4,7 +4,7 @@ module VGA
 input wire Clock, Reset2,
 //input wire [2:0] iColor,
 output reg oHs,oVs,
-output wire [2:0] oRGB,
+output reg [2:0] oRGB,
 output reg [18:0] oColorAddress
 );
 	wire Clock2;
@@ -13,7 +13,6 @@ output reg [18:0] oColorAddress
 	reg ResetFila;
 	wire [15:0] numColumna;
 	wire [8:0] numFila;
-	assign oRGB = 3'd2;
 	
 	ClockDiv2 clocker
 	(
@@ -56,10 +55,13 @@ output reg [18:0] oColorAddress
 			oVs <=1;
 			oHs <=1;
 			enableFila <=0;
+			oRGB <= 3'd0;
 		end
 		
 		else
 		begin
+		
+		
 		
 		if(numColumna > 16'd639 & numColumna <=16'd8639 & numFila == 9'd479) 
 		begin // TFP VS
@@ -69,6 +71,7 @@ output reg [18:0] oColorAddress
 			oVs <=1;
 			oHs <=1;
 			oColorAddress <=0;
+			oRGB <= 3'd0;
 		end
 		
 		else if(numColumna > 16'd8639 & numColumna<= 16'd10239 & numFila == 9'd479)
@@ -79,9 +82,10 @@ output reg [18:0] oColorAddress
 			oVs <=0;
 			oHs <=1;
 			oColorAddress<=0;
+			oRGB <= 3'd0;
 		end
 		
-		else if(numColumna > 16'd10239 & numColumna < 33439 & numFila == 9'd479)
+		else if(numColumna > 16'd10239 & numColumna < 35839 & numFila == 9'd479)
 		begin //TBP VS
 			enableFila <=0;
 			ResetCol <= 0;
@@ -89,9 +93,10 @@ output reg [18:0] oColorAddress
 			oVs <=1;
 			oHs <=1;
 			oColorAddress<=0;
+			oRGB <= 3'd0;
 		end
 		
-		else if(numColumna == 33439 & numFila == 9'd479)
+		else if(numColumna == 35839 & numFila == 9'd479)
 		begin //Reset after VS
 			enableFila <=1;
 			ResetCol <= 1;
@@ -99,6 +104,7 @@ output reg [18:0] oColorAddress
 			oVs <=1;
 			oHs <=1;
 			oColorAddress<=0;
+			oRGB <= 3'd0;
 		end
 		
 		else if(numColumna >16'd639 & numColumna <= 16'd655)
@@ -109,7 +115,7 @@ output reg [18:0] oColorAddress
 			oHs<=1;
 			oVs<=1;
 			oColorAddress<=0;
-
+			oRGB <= 3'd0;
 		end
 		
 		else if(numColumna > 16'd655 & numColumna<=16'd751)
@@ -120,6 +126,7 @@ output reg [18:0] oColorAddress
 			oHs<=0;
 			oVs<=1;
 			oColorAddress<=0;
+			oRGB <= 3'd0;
 		end
 		
 		else if(numColumna> 16'd751 & numColumna < 16'd799)
@@ -130,6 +137,7 @@ output reg [18:0] oColorAddress
 			oHs<=1;
 			oVs<=1;
 			oColorAddress<=0;
+			oRGB <= 3'd0;
 		end
 		
 		else if( numColumna == 16'd799) //Reset after HS
@@ -140,6 +148,7 @@ output reg [18:0] oColorAddress
 			oHs<=1;
 			oVs<=1;
 			oColorAddress<=0;
+			oRGB <= 3'd0;
 		end
 		
 		else
@@ -150,11 +159,15 @@ output reg [18:0] oColorAddress
 			oHs<=1;
 			oVs<=1;
 			oColorAddress<=639*numFila + numColumna;
+			oRGB <= 3'd2;
 		end
 		
 		
 		
 		end
+	
+		
+	
 	end
 	
 

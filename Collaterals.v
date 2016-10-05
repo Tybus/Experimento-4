@@ -99,7 +99,7 @@ module Reseter
 reg [1:0] cuente;
 reg [3:0] cuente2;
 
-always@(Clock)
+always@(posedge Clock)
 	begin
 	
 		if(Reset)
@@ -110,12 +110,17 @@ always@(Clock)
 		end
 		
 		else if(cuente2 == 15)
+		begin	
 			newReset<=0;
+			cuente <= cuente;
+			cuente2 <= cuente2;
+		end
 		
 		else if(cuente == 3)
 		begin
 			newReset <= 1;
 			cuente2<= cuente2+1;
+			cuente <= cuente;
 		end
 		
 		else
