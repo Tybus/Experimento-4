@@ -3,14 +3,14 @@ module VGA
 (
 input wire Clock, Reset2,
 //input wire [2:0] iColor,
-output reg oHs,oVs,
-output reg [2:0] oRGB,
+output wire oHs,oVs,
+output wire [2:0] oRGB,
 output reg [18:0] oColorAddress
 );
 	wire Clock2;
-	reg enableFila;
-	reg ResetCol;
-	reg ResetFila;
+	wire enableFila;
+	wire ResetCol;
+	wire ResetFila;
 	wire [15:0] numColumna;
 	wire [8:0] numFila;
 	
@@ -45,7 +45,21 @@ output reg [18:0] oColorAddress
 		.Reset(Reset2),
 		.newReset(Reset)
 	);
-	always @(*) //Dinamica de contadores
+	
+	assign FinFila = (numFila == 521)? 1'b1 : 1'b0;
+	assign FinColumna = (numColumna == 800)? 1'b1 : 1'b0;
+	
+	assign oHs = (numColumna >= 656 && numColumna < 752)? 1'b0 : 1'b1;
+	assign oVs = (numFila >= 490 && numFila < 492)? 1'b0 : 1'b1;
+	
+	assign ResetCol = (FinColumna == 1 || Reset == 1)? 1'b1 : 1'b0;
+	assign ResetFila = (FinFila == 1 || Reset == 1)? 1'b1 : 1'b0;
+	
+	assign enableFila = (FinColumna == 1)? 1'b1 : 1'b0;
+	
+	assign oRGB = (numColumna < 640 && numFila < 480)? 3'd2 : 0;
+	
+	/*always @(*) //Dinamica de contadores
 	begin
 		if(Reset) //Inciio
 		begin
@@ -168,7 +182,7 @@ output reg [18:0] oColorAddress
 	
 		
 	
-	end
+	end*/
 	
 
 endmodule
