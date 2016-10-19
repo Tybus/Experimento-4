@@ -7,10 +7,10 @@ module MiniAlu
 (
  input wire Clock,
  input wire Reset,
- output wire oVGA_R,oVGA_G,oVGA_B,
+ output wire [2:0] oRGB,
+ output wire oHsync,
+ output wire oVsync,
  output wire [7:0] oLed
-
- 
 );
 
 wire [15:0]  wIP,wIP_temp;
@@ -21,6 +21,10 @@ reg [15:0]   rResult;
 wire [7:0]  wSourceAddr0,wSourceAddr1,wDestination;
 wire [15:0] wSourceData0,wSourceData1,wIPInitialValue,wImmediateValue;
 wire [2:0] wColor;
+wire [13:0] wColorAddress;
+wire oVGA_R, oVGA_G, oVGA_B;
+wire rVGAWriteEnableAtrasado;
+ 
 
 
 ROM InstructionRom 
@@ -41,18 +45,36 @@ RAM_DUAL_READ_PORT DataRam
 	.oDataOut1(     wSourceData1 )
 );
 
+FFD_POSEDGE_SYNCRONOUS_RESET # ( 1 ) FF_WE_VIDEO 
+(
+	.Clock(Clock),
+	.Reset(Reset),
+	.Enable(1'b1),
+	.D(rVGAWritEnable),
+	.Q(rVGAWriteEnableAtrasado)
+);
+
 //Memoria de Video
-RAM_SINGLE_READ_PORT # (3,24,640*480) VideoMemory
+RAM_SINGLE_READ_PORT # (3,14,100*100) VideoMemory
 (
 	.Clock( Clock ),
-	.iWriteEnable( rVGAWritEnable ),
-	.iReadAddress( 24'b0 ),
-	.iWriteAddress( {wSourceData1[7:0],wSourceData0} ),
+	.iWriteEnable( rVGAWriteEnableAtrasado ),
+	.iReadAddress( wColorAddress ),
+	.iWriteAddress( {wSourceData1[5:0], wSourceData0}	),
 	.iDataIn( wColor ),
 	.oDataOut( {oVGA_R,oVGA_G,oVGA_B} )
 );
 
-
+VGA Controller
+(
+	.Clock(Clock),
+	.Reset2(Reset),
+	.iColor({oVGA_R,oVGA_G,oVGA_B}),
+	.oHs(oHsync),
+	.oVs(oVsync),
+	.oRGB(oRGB),
+	.oColorAddress(wColorAddress)
+);
 
 assign wIPInitialValue = (Reset) ? 8'b0 : wDestination;
 UPCOUNTER_POSEDGE IP

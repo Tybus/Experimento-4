@@ -22,7 +22,9 @@ output reg [SIZE-1:0] Q
   end
 
 endmodule
+
 //----------------------------------------------------
+
 module FFD_POSEDGE_SYNCRONOUS_RESET # ( parameter SIZE=8 )
 (
 	input wire				Clock,
@@ -71,29 +73,31 @@ always @(posedge Clock)
 	end
 endmodule
 
+//----------------------------------------------------
+
 module ClockDiv2 
 (	
-	input Reset,
-	input Clock,
-	output Clock2
+	input wire Reset,
+	input wire Clock,
+	output reg Clock2
 );
-reg [1:0] cuente;
 
 always@(posedge Clock)
 	begin
 	if(Reset)
-		cuente =0;
+		Clock2 =0;
 	else
-		cuente = cuente +1;
-	end
-assign Clock2 = cuente[1];	
+		Clock2 = ! Clock2;
+	end	
 	
 endmodule
 
+//----------------------------------------------------
+
 module Reseter
 (
-	input Reset,
-	input Clock,
+	input wire Reset,
+	input wire Clock,
 	output reg newReset
 );
 reg [1:0] cuente;
@@ -130,4 +134,71 @@ always@(posedge Clock)
 			cuente2 <=0;
 		end	
 	end
+endmodule
+
+//----------------------------------------------------
+
+module VGA 
+(
+input wire Clock, Reset2,
+input wire [2:0] iColor,
+output wire oHs,oVs,
+output wire [2:0] oRGB,
+output wire [13:0] oColorAddress
+);
+	wire Clock2;
+	wire enableFila;
+	wire ResetCol;
+	wire ResetFila;
+	wire [9:0] numColumna;
+	wire [9:0] numFila;
+	wire Reset, FinFila, FinColumna;
+	
+	ClockDiv2 clocker
+	(
+		.Clock(Clock),
+		.Reset(Reset2),
+		.Clock2(Clock2)
+	);
+	
+	UPCOUNTER_POSEDGE #(.SIZE(10)) columnas  
+	(
+		.Clock(Clock2),
+		.Reset(ResetCol),
+		.Initial(10'd0),
+		.Enable(1'b1),
+		.Q(numColumna)
+	);
+	
+	UPCOUNTER_POSEDGE #(.SIZE(10)) filas 
+	(
+		.Clock(Clock2),
+		.Reset(ResetFila),
+		.Initial(10'd0),
+		.Enable(enableFila),
+		.Q(numFila)
+	);
+	
+	Reseter reseteador
+	(
+		.Clock(Clock),
+		.Reset(Reset2),
+		.newReset(Reset)
+	);
+	
+	assign FinFila = (numFila == 521)? 1'b1 : 1'b0;
+	assign FinColumna = (numColumna == 800)? 1'b1 : 1'b0;
+	
+	assign oHs = (numColumna >= 656 && numColumna <= 752)? 1'b0 : 1'b1;
+	assign oVs = (numFila >= 490 && numFila <= 492)? 1'b0 : 1'b1;
+	
+	assign ResetCol = (FinColumna == 1 || Reset == 1)? 1'b1 : 1'b0;
+	assign ResetFila = (FinFila == 1 || Reset == 1)? 1'b1 : 1'b0;
+	
+	assign enableFila = (FinColumna == 1)? 1'b1 : 1'b0;
+	
+	assign oRGB = (numColumna < 100 && numFila < 100)? iColor : 3'd0;
+	
+	assign oColorAddress = (numColumna < 100 && numFila < 100)? numFila * 100 + numColumna : 14'd0;
+
 endmodule

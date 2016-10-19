@@ -1,25 +1,47 @@
 `timescale 1ns / 1ps
 
+////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer:
+//
+// Create Date:   22:30:52 01/30/2011
+// Design Name:   MiniAlu
+// Module Name:   D:/Proyecto/RTL/Dev/MiniALU/TestBench.v
+// Project Name:  MiniALU
+// Target Device:  
+// Tool versions:  
+// Description: 
+//
+// Verilog Test Fixture created by ISE for module: MiniAlu
+//
+// Dependencies:
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+////////////////////////////////////////////////////////////////////////////////
+
 module TestBench;
 
 	// Inputs
 	reg Clock;
 	reg Reset;
-	reg [2:0] iColor;
-	
+
 	// Outputs
+	wire [7:0] oLed;
 	wire [2:0] oRGB;
-	wire oHs,oVs;
-	wire [18:0] oColorAddress;
+	wire oHsync;
+	wire oVsync;
+
 	// Instantiate the Unit Under Test (UUT)
-	VGA vga (
+	MiniAlu uut (
 		.Clock(Clock), 
-		.oHs(oHs), 
-		.oVs(oVs),
-		.Reset2(Reset),
-		//.iColor(iColor),
-		.oRGB(oRGB),
-		.oColorAddress(oColorAddress)
+		.Reset(Reset), 
+		.oLed(oLed),
+		.oHsync(oHsync),
+		.oVsync(oVsync),
+		.oRGB(oRGB)
 	);
 	
 	always
@@ -30,18 +52,18 @@ module TestBench;
 
 	initial begin
 		// Initialize Inputs
-		Clock =0;
-		
+		Clock = 0;
 		Reset = 0;
-	
-		#100
 
+		// Wait 100 ns for global reset to finish
+		#100;
 		Reset = 1;
-		#100
-		Reset =0;
-		// Wait 100 ns for global reset to finish        
+		#50
+		Reset = 0;
+        
 		// Add stimulus here
 
 	end
       
 endmodule
+
