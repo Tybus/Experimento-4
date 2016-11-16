@@ -99,7 +99,7 @@ always @ ( * )
 		//---wait for clock low
 		`WAITCLK_L1:
 		begin
-			if (if r_bitcount < 11)
+			if (r_bitcount < 11)
 				begin
 					if (iPS2CLK)
 						begin
@@ -142,7 +142,7 @@ always @ ( * )
 		//---wait for clock low 2
 		`WAITCLK_L2:
 		begin
-			if (if r_bitcount < 11)
+			if (r_bitcount < 11)
 				begin
 					if (iPS2CLK)
 						begin
@@ -204,7 +204,7 @@ always @ ( * )
 		//---wait for clock lo 3
 		`WAITCLK_L3:
 		begin
-			if (if r_bitcount < 11)
+			if (r_bitcount < 11)
 				begin
 					if (iPS2CLK)
 						begin
@@ -258,35 +258,33 @@ always @ ( * )
 		end
 
 		endcase
-	
-	end
-
 
 //--------------------------------------------------------------------------------
 // AQUÍ SE DEFINE LA DIRECCIÓN EN FUNCIÓN DE QUÉ TECLA SE PRESIONÓN EN EL TECLADO
 //--------------------------------------------------------------------------------
-case (rKeyval1) begin
-	8'h1C:
-	begin
-  		o_direccion = 4'b0001;  //presionó A => izquierda
-	end
-	8'h1B:
-	begin
-	  	o_direccion = 4'b0010;  //presionó S => abajo
-	end
-	8'h23:
-	begin
-	  	o_direccion = 4'b0100;  //presionó D => derecha
-	end
-	8'h1D:
-	begin
-	  	o_direccion = 4'b1000; //presionó W => arriba
-	end
-  default: 
-  begin
-  		o_direccion = 4'b0000; // en este caso no se presióno ninguna tecla de dirección
-  end
-endcase
-
+		case (rKeyval1)
+			8'h1C:
+			begin
+				o_direccion = 4'b0001;  //presionó A => izquierda
+			end
+			8'h1B:
+			begin
+				o_direccion = 4'b0010;  //presionó S => abajo
+			end
+			8'h23:
+			begin
+				o_direccion = 4'b0100;  //presionó D => derecha
+			end
+			8'h1D:
+			begin
+				o_direccion = 4'b1000; //presionó W => arriba
+			end
+		default: 
+		begin
+				o_direccion = 4'b0000; // en este caso no se presióno ninguna tecla de dirección
+		end
+		endcase
+	
+	end //always comb
 
 endmodule
